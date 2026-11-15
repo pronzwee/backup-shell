@@ -23,7 +23,6 @@ ShellRoot {
 
    Process {
       id: configProc
-      // Masukkan path absolut yang baru saja kita temukan dari terminal
       command: ["cat", "/home/user01/.config/quickshell/shell/config/bar/bar.json"]
       running: true
       stdout: StdioCollector {
