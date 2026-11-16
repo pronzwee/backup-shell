@@ -23,7 +23,7 @@ ShellRoot {
 
    Process {
       id: configProc
-      command: ["cat", "/home/user01/.config/quickshell/shell/config/bar/bar.json"]
+      command: ["cat", "~/.config/quickshell/shell/config/bar/bar.json"]
       running: true
       stdout: StdioCollector {
          onStreamFinished: {

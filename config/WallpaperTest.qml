@@ -92,6 +92,8 @@ FocusScope {
       spacing: picker.thumbSpacing
       clip: true
       cacheBuffer: 600
+      leftMargin: width / 2 - picker.thumbW / 2
+      
 
    }
 }

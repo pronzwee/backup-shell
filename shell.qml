@@ -20,7 +20,7 @@ ShellRoot {
          required property var modelData
          Island { id: island }
          Widget {}
-         AppRunning {}
+         Menu {}
          CornerRadius {}
          Lockscreen {}
       }
