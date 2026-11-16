@@ -1,4 +1,5 @@
 import Quickshell
+import Quickshell.Io
 import QtQuick
 import QtQuick.Layouts
 
@@ -9,6 +10,7 @@ PanelWindow {
     id: root
 
     property int barH: 600
+    property bool active: false
     
     anchors { bottom: true; left: true; right: true }
     implicitHeight: barH
@@ -58,14 +60,44 @@ PanelWindow {
         Rectangle {
             id: content
             Layout.alignment: Qt.AlignBottom
-            Layout.bottomMargin: 0
-            width: 400
+            Layout.bottomMargin: root.active ? 0 : -50
+            width: 700
             height: 50
             topLeftRadius: 15
             topRightRadius: 15
             color: Theme.bg
             Behavior on Layout.bottomMargin {
                 NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+            }
+
+            Rectangle {
+                anchors.horizontalCenter: parent.horizontalCenter
+                y: 10
+                radius: 10
+                height: 25
+                width: parent.width - 20
+                Layout.fillWidth: true
+                color: Theme.trans
+                RowLayout {
+                    spacing: 0
+                    Repeater {
+                        model: ["Menu", "Dashboard", "Wallpapers", "Resource"]
+                        delegate: Component {
+                            Rectangle {
+                                required property var modelData
+                                Layout.preferredWidth: (content.width / 4) - (20 / 4)
+                                Layout.preferredHeight: 25
+                                color: Theme.background
+                                radius: 8
+                                Text {
+                                    text: modelData
+                                    anchors.centerIn: parent
+                                    color: Theme.text
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -84,6 +116,12 @@ PanelWindow {
                 mirrored: false
                 radius: curve.radius
             }
+        }
+    }
+    IpcHandler {
+        target: "menu"
+        function toggle(): void {
+            root.active = !root.active
         }
     }
 }
