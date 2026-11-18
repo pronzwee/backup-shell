@@ -1,183 +1,138 @@
-import QtQuick
 import Quickshell
-import Quickshell.Widgets
-import Quickshell.Services.Mpris
-import Quickshell.Wayland
+import Quickshell.Io
+import QtQuick
+import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
-import QtQuick.Effects
 
 import qs.services
 import qs.theme
 import qs.config
 
 Rectangle {
-   id: movableRect
-   x: 1450
-   y: 830
-   width: 420
-   height: 200
-   radius: 25
+   id: root
+
+   property bool move: false
+   
+   width: 250
+   height: 320
    color: Theme.inversePrimary
-   clip: true
-   border.width: 2
-   border.color: Theme.primary
+   y: savePos.posY
+   x: savePos.posX
+   radius: 20
 
-   WaveCont {
-      id: wave
-      anchors.bottom: parent.bottom
-      anchors.bottomMargin: -1
-      anchors.horizontalCenter: parent.horizontalCenter
-      width: parent.width
-      height: Cava.levels[0] ? 100 : 40
-      layer.enabled: true
-      layer.effect: OpacityMask {
-         maskSource: Rectangle {
-            width: wave.width
-            height: wave.height
-            radius: 25
+   FileView {
+      id: posStorage
+      path: Quickshell.statePath("mpris_widget_pos.json")
+      onAdapterUpdated: writeAdapter()
+
+      JsonAdapter {
+         id: savePos
+         property real posX: 1600
+         property real posY: 700
+      }
+   }
+
+   ColumnLayout {
+      anchors {
+         horizontalCenter: parent.horizontalCenter
+         top: parent.top
+         topMargin: 9
+      }
+      spacing: 5
+
+      Row {
+         anchors.top: parent.top
+         anchors.left: parent.left
+         Text {
+            text: "music_note"
+            font {
+               family: "Material Symbols Rounded"
+               pixelSize: 23
+               bold: true
+               italic: true
+            }
+            color: Theme.text
+         }
+         Text {
+            padding: 5
+            text: "Music Player"
+            font {
+               family: "SF Pro Display"
+               pixelSize: 16
+               italic: true
+               weight: 600
+            }
+            color: Theme.text
+            opacity: 0.8
          }
       }
-   }
-   Resources {
-      id: resource
-   }
-
-   Rectangle {
-      anchors { top: parent.top; left: parent.left; leftMargin: 28; topMargin: 20 }
-      width: 160
-      height: 160
-      color: Theme.trans
-      y: 12
-
-      CavaRing {
-         anchors.centerIn: parent
-         count: 55
-         barWidth: 6
-         innerRadius: 73
-         maxBar: 27
-         z: 1
-      }
 
       Rectangle {
-         id: rRect
-         anchors { top: parent.top; right: parent.right; margins: 10 }
-         width: 10
-         height: 80
-         radius: 10
-         z: 1
-         rotation: 14
-      }
-
-      Rectangle {
-         width: 12
-         height: 15
-         radius: 20
-         color: Theme.surface
-         anchors.top: rRect.bottom
-         anchors.right: rRect.left 
-         anchors.topMargin: -9
-         anchors.rightMargin: -2
-         z: 2
-         rotation: 13
-      }
-
-      Rectangle {
-         id: imgRect
-         anchors.centerIn: parent
-         width: img.width + 10
-         height: img.height + 10
-         radius: img.width
+         width: root.width - 15
+         height: root.height / 2.25
+         radius: 17
          clip: true
-         color: Theme.primary
-
-         RotationAnimator {
-            target: imgRect
-            from: 0
-            to: 360
-            duration: 9000
-            running: true
-            paused: !MprisServ.isPlaying
-            loops: Animation.Infinite
-         }
+         color: Theme.trans
 
          Image {
             id: img
             anchors.centerIn: parent
             source: MprisServ.trackArtUrl
-            width: 130
-            height: 130
+            width: parent.width
+            height: parent.height
             fillMode: Image.PreserveAspectCrop
-            asynchronous: true
-            cache: true
-
             layer.enabled: true
+
             layer.effect: OpacityMask {
                maskSource: Rectangle {
                   width: img.width
                   height: img.height
-                  radius: img.width / 2
-               }
-            }
-
-            Rectangle {
-               width: 20
-               height: 20
-               anchors.centerIn: parent
-               radius: 20
-
-               Rectangle {
-                  width: 14
-                  height: 14
-                  color: Theme.surface
-                  anchors.centerIn: parent
-                  radius: 10
+                  radius: 15
                }
             }
          }
       }
-   }
-
-   Rectangle {
-      anchors { top: parent.top; right: parent.right; topMargin: 10; rightMargin: 10 }
-      width: 200
-      height: 178
-      color: Theme.onPrimaryFixedVariant
-      radius: 18
-
       Column {
-         width: 200
-         anchors { top: parent.top; left: parent.left; right: parent.right; margins: 15 }
          spacing: 5
-
          Text {
-            text: MprisServ.trackTitle || "No media"
-            width: parent.width
-            font { family: "SF Pro Display"; bold: true; pixelSize: 17 }
-            color: Theme.text
+            text: MprisServ.trackTitle || "No Media"
+            font {
+               family: "SF Pro Display"
+               pixelSize: 14
+               bold: true
+            }
+            Layout.preferredWidth: parent.width
+            Layout.maximumWidth: parent.width
             elide: Text.ElideRight
             wrapMode: Text.NoWrap
+            color: Theme.text
+            topPadding: 5
+            leftPadding: 5
          }
-
+      
          Text {
-            text: MprisServ.trackArtist || "Unknown Artist"
-            width: parent.width
-            font { family: "SF Pro Display"; pixelSize: 13;  }
+            text: MprisServ.trackArtist || "Unknow Artist"
+            font {
+               family: "SF Pro Display"
+               pixelSize: 13
+            }
             color: Theme.text
             opacity: 0.7
-            elide: Text.ElideRight
-            wrapMode: Text.NoWrap
+            leftPadding: 5
          }
-
+      
          Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.horizontalCenterOffset: 20
             width: parent.width
             spacing: 10
 
             Rectangle {
                id: durRect1
-               width: 165
+               width: 200
                height: 4
                anchors.verticalCenter: parent.verticalCenter
-               anchors.verticalCenterOffset: 50
+               anchors.verticalCenterOffset: 15
                radius: 10
                color: Theme.text
                opacity: 1
@@ -192,7 +147,7 @@ Rectangle {
                   }
                   height: parent.height + 15
                   radius: 4
-                  color: Theme.onPrimaryFixedVariant
+                  color: Theme.inversePrimary
                   Rectangle {
                      anchors.top: parent.top
                      anchors.right: parent.right
@@ -204,10 +159,10 @@ Rectangle {
                   }
 
                   Waveform {
-                     width: durRect.width - 13
+                     width: durRect.width - 14
                      waveColor: Theme.primary
-                     frequency: 8
-                     speed: 15000
+                     frequency: 7
+                     speed: 14500
                      lineWidth: 4
                      height: 12
                      y: 3
@@ -215,64 +170,91 @@ Rectangle {
                }
             }
          }
+      }
 
-         Row {
-            spacing: 8
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.horizontalCenterOffset: 5
-            topPadding: 60
+      Row {
+         spacing: 10
+         anchors.horizontalCenter: parent.horizontalCenter
+         anchors.horizontalCenterOffset: 5
+         topPadding: 30
 
-            Rectangle {
-               width: 25
-               height: 25
-               radius: 12
-               color: Theme.text
-               Text {
-                  text: "󰒮"
-                  font.pixelSize: 16
-                  color: Theme.background
-                  anchors.centerIn: parent
-                  MouseArea {
-                     anchors.fill: parent
-                     cursorShape: Qt.PointingHandCursor
-                     onClicked: MprisServ.previous()
-                  }
-               }
+         Rectangle {
+            width: 27
+            height: 27
+            radius: 15
+            color: Theme.text
+            MouseArea {
+               anchors.fill: parent
+               cursorShape: Qt.PointingHandCursor
+               onClicked: MprisServ.previous()
             }
-            Rectangle {
-               width: 50
-               height: 25
-               radius: 6
-               color: Theme.text
-               Text {
-                  text: MprisServ.isPlaying ? "" : ""
-                  font.pixelSize: 20
-                  color: Theme.background
-                  anchors.centerIn: parent
-                  MouseArea {
-                     anchors.fill: parent
-                     cursorShape: Qt.PointingHandCursor
-                     onClicked: MprisServ.togglePlayPause()
-                  }
-               }
+            Text {
+               text: "󰒮"
+               font.pixelSize: 19
+               color: Theme.background
+               anchors.centerIn: parent
             }
-            Rectangle {
-               width: 25
-               height: 25
-               radius: 12
-               color: Theme.text
-               Text {
-                  text: "󰒭"
-                  font.pixelSize: 16
-                  color: Theme.background
-                  anchors.centerIn: parent
-                  MouseArea {
-                     anchors.fill: parent
-                     cursorShape: Qt.PointingHandCursor
-                     onClicked: MprisServ.next()
-                  }
-               }
+         }
+         Rectangle {
+            width: 55
+            height: 27
+            radius: 6
+            color: Theme.text
+            MouseArea {
+               anchors.fill: parent
+               cursorShape: Qt.PointingHandCursor
+               onClicked: MprisServ.togglePlayPause()
             }
+            Text {
+               text: MprisServ.isPlaying ? "" : ""
+               font.pixelSize: 20
+               // font.family: "Material Symbols Rounded"
+               color: Theme.background
+               anchors.centerIn: parent
+            }
+         }
+         Rectangle {
+            width: 27
+            height: 27
+            radius: 15
+            color: Theme.text
+            MouseArea {
+               anchors.fill: parent
+               cursorShape: Qt.PointingHandCursor
+               onClicked: MprisServ.next()
+            }
+            Text {
+               text: "󰒭"
+               font.pixelSize: 19
+               color: Theme.background
+               anchors.centerIn: parent
+            }
+         }
+      }
+   }
+   Item {
+      anchors.top: parent.top
+      width: root.width
+      height: 30
+      TapHandler {
+         onDoubleTapped: {
+            root.move = !root.move
+         }
+      }
+      HoverHandler {
+         cursorShape: root.move ? Qt.OpenHandCursor : Qt.PointingHandCursor
+      }
+   }
+   DragHandler {
+      id: handler
+      target: root
+      enabled: root.move
+      xAxis.enabled: root.move
+      yAxis.enabled: root.move
+      onActiveChanged: {
+         if (!handler.active) {
+            savePos.posX = root.x
+            savePos.posY = root.y
          }
       }
    }

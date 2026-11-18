@@ -19,19 +19,6 @@ PanelWindow {
     mask: Region { item: button }
     exclusionMode: "Ignore"
 
-    Rectangle {
-        id: button
-        width: 40
-        height: 40
-        anchors.bottom: parent.bottom
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                content.Layout.bottomMargin = (content.Layout.bottomMargin === 0) ? -50 : 0
-            }
-        }
-    }
-
     RowLayout {
         id: layoutItem
         anchors.horizontalCenter: parent.horizontalCenter
