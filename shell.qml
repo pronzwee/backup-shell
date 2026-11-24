@@ -9,4 +9,10 @@ import qs.modules
 
 Scope {
    Island {}
+   CornerRadius {
+      edge: "left"
+   }
+   CornerRadius {
+      edge: "right"
+   }
 }
