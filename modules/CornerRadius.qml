@@ -1,5 +1,6 @@
-import Quickshell
 import QtQuick
+import Quickshell
+import Quickshell.Wayland
 
 import qs.theme
 import qs.config
@@ -21,6 +22,7 @@ PanelWindow {
    exclusionMode: "Ignore"
    implicitWidth: win.curveRadius
    color: Colors.trans
+   WlrLayershell.layer: WlrLayer.Overlay
 
    Curve {
       anchors {

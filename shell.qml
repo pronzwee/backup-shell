@@ -11,8 +11,10 @@ Scope {
    Island {}
    CornerRadius {
       edge: "left"
+      curveRadius: CornerRadius.curveRadius
    }
    CornerRadius {
       edge: "right"
+      curveRadius: CornerRadius.curveRadius
    }
 }
