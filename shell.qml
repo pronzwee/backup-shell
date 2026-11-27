@@ -17,4 +17,5 @@ Scope {
       edge: "right"
       curveRadius: CornerRadius.curveRadius
    }
+   Surface {}
 }
