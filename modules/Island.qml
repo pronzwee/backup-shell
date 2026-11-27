@@ -6,13 +6,23 @@ import QtQuick.Layouts
 import qs.theme
 import qs.components
 import qs.config
+import qs.config.cava
 import qs.services
 
 ShellRoot {
    id: root
 
+   readonly property bool isPlayinng: Cava.total !== 0
+   property bool visualizerShown: false
    property int barH: Theme.barHeight
    property int barW: Theme.barWidth
+
+   Timer {
+      interval: 1000
+      repeat: false
+      running: !isPlayinng   
+      onTriggered: visualizerShown = false
+   }
 
    Variants {
       model: Quickshell.screens
@@ -37,16 +47,6 @@ ShellRoot {
             color: Colors.bg
             Pill {
                anchors.horizontalCenter: parent.horizontalCenter
-               Text {
-                  y: 4
-                  text: Qt.formatDateTime(Clock.date, "hh : mm")
-                  color: "white"
-                  font {
-                     family: "SF Pro Display"
-                     weight: Font.Medium + 50
-                     pixelSize: 14
-                  }
-               }
             }
          }
       }

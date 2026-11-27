@@ -48,6 +48,13 @@ Item {
          }
       }
    }
+   // Gpu Process
+   Process {
+      id: gpuProcess
+      running: true
+      command: [""]
+   }
+   
    Timer {
       interval: updateInterval
       running: true
